@@ -1,0 +1,26 @@
+---
+
+ - hosts: all
+
+   tasks: 
+
+   - debug: var=play_hosts
+
+   - apt: update_cache=yes
+
+   - apt: pkg={{item}} state=latest
+     with_items: ['screen', 'htop', 'tree']
+  
+   - hostname: name={{hostname}}
+     when: hostname is defined
+
+   - name: Update /etc/hosts with local hostname
+     lineinfile:
+       dest: /etc/hosts
+       regexp: '^127\.0\.1\.1'
+       line: '127.0.1.1 {{ansible_hostname}} {{hostname}}'
+       state: present
+     when: hostname is defined 
+
+   - copy: src=files/etc/network/if-up.d/ dest=/etc/network/if-up.d/ mode=0755
+
