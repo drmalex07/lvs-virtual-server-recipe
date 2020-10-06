@@ -30,7 +30,7 @@ The recipe is basicly a collection of Ansible playbooks. They can be either run 
 
 ### 2.1 Setup with Vagrant
 
-You need to edit `Vagrant` file to 
+You need to edit `Vagrant` file to provide the `EXTERNAL_BRIDGE` parameter (network interface (on host) to be used as the bridge for the external interface on VMs). 
 
 The Vagrant file sets up 2 machines `master` and `backup`:
 
