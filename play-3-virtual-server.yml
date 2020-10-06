@@ -13,12 +13,23 @@
    
    - shell:
        cmd: >
-         ip addr show to {{external_ipv4_address}}/24 | grep -Po -e '(?<=^[1-9][:][\s])(.*)(?=[:])'
+         ip -brief link show | grep -F -w -e '{{external_mac_address}}' | awk '{print $1}'
      register: external_iface_result
 
    - set_fact:
        internal_iface: "{{internal_iface_result.stdout}}"
        external_iface: "{{external_iface_result.stdout}}"
+   
+   # https://wiki.debian.org/NetworkConfiguration#Bringing_up_an_interface_without_an_IP_address
+   - name: Generate configuration stanza for external interface
+     copy:
+       content: |
+         auto {{external_iface}}
+         iface {{external_iface}} inet manual
+            pre-up ifconfig $IFACE up
+            post-down ifconfig $IFACE down
+       dest: /etc/network/interfaces.d/51.cfg
+       backup: yes
 
    - apt: update_cache=yes
 
@@ -73,4 +84,3 @@
        # the initial state for the VRRP router
        vrrp_state: "{{'BACKUP' if (inventory_hostname == 'backup') else 'MASTER'}}"
   
-

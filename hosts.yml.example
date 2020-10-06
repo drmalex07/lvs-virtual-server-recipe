@@ -69,11 +69,13 @@ all:
            fqdn: nat-c1-x0.dev-1.localdomain
            hostname: nat-c1-x0
            ipv4_address: '192.168.5.4'
-           external_ipv4_address: '192.168.1.20'
+           # the MAC address of the external (public-facing) network interface 
+           # (we need it to identify the interface, because no real IP will be assigned)
+           external_mac_address: '08:00:27:35:77:12'
         'backup':
            ansible_host: nat-c1-x1.internal
            ansible_port: 22
            fqdn: nat-c1-x1.dev-1.localdomain
            hostname: nat-c1-x1
            ipv4_address: '192.168.5.5'
-           external_ipv4_address: '192.168.1.21'
+           external_mac_address: '08:00:27:44:04:83'

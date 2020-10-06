@@ -23,11 +23,14 @@ Vagrant.configure(2) do |config|
     config.vm.define machine_name do |machine|
       h = inventory_groups['nat']['hosts'][machine_name]
       machine.vm.network "private_network", ip: h['ipv4_address']
-      machine.vm.network "public_network", bridge: EXTERNAL_BRIDGE, ip: h['external_ipv4_address'], netmask: EXTERNAL_NETMASK 
+      machine.vm.network "public_network", 
+        bridge: EXTERNAL_BRIDGE, 
+        mac: h['external_mac_address'].gsub(":", ""), 
+        auto_config: false
       machine.vm.provider "virtualbox" do |vb|
         vb.name = h['fqdn']
         vb.memory = 512
-      end    
+      end
     end
   end
   

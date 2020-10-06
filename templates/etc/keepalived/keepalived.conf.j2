@@ -14,24 +14,7 @@ global_defs {
 
 vrrp_sync_group VG1 {
     group {
-        _external_network
         _internal_network
-    }
-}
-
-vrrp_instance _external_network {
-    state {{vrrp_state}}
-    interface {{external_iface}}
-    virtual_router_id 51
-    priority 100
-    advert_int 3
-    # authentication is deprecated (see man page)
-    authentication {
-        auth_type AH
-        auth_pass {{auth_password}}
-    }
-    virtual_ipaddress {
-        {{external_ipv4_virtual_address}}
     }
 }
 
@@ -45,8 +28,13 @@ vrrp_instance _internal_network {
         auth_type AH
         auth_pass {{auth_password}}
     }
+    track_interface {
+        {{external_iface}}
+    }
     virtual_ipaddress {
         {{internal_ipv4_virtual_address}}
+        # <IPADDR>/<MASK> dev <IFACE>
+        {{external_ipv4_virtual_address}}/{{external_ipv4_network| ipaddr('prefix')}} dev {{external_iface}}
     }
 }
 
