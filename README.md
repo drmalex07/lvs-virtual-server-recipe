@@ -1,6 +1,10 @@
 # README - Setup LVS virtual server
 
-This recipe sets up an LVS virtual server (actually, a pair of servers in a highly-available mode) using `keepalived`.
+This recipe sets up an LVS-NAT virtual server (actually, a pair of servers in a highly-available mode) using `keepalived`.
+
+In this setup, we have an external and an internal network. The external is the one facing the end-user of a service, while the internal interacts with the backend services (the `real` servers in LVS terminology). Each of these networks have a virtual IP (VIP): for the external network the VIP is the endpoint that users know to access services, while on the internal network the VIP is the gateway used by backend servers (note that in order for LVS-NAT to work, the return path for a packet must be the same, so we need to configure those gateways!).
+
+On failover, both VIPs switch from master machine to the backup machine (this group of VIPs is the `VRRP` sync group).
 
 ## 1. Prerequisites
 
